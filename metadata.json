@@ -1,0 +1,6 @@
+{
+  "name": "Status PRO",
+  "description": "A modern status saver app with direct saving, built-in media preview, easy gallery management, and dark mode support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

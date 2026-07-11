@@ -1,0 +1,117 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="108"
+            android:viewportHeight="108">
+            
+            <!-- Segment 1 -->
+            <path
+                android:name="segment1"
+                android:pathData="M 54, 22 A 32, 32 0 0, 1 86, 54 A 32, 32 0 0, 1 63, 84.7"
+                android:strokeWidth="7"
+                android:strokeColor="#FFFFFF"
+                android:strokeLineCap="round"
+                android:fillColor="#00000000"
+                android:trimPathEnd="0" />
+
+            <!-- Segment 2 -->
+            <path
+                android:name="segment2"
+                android:pathData="M 22, 54 A 32, 32 0 0, 1 45, 23.3"
+                android:strokeWidth="7"
+                android:strokeColor="#B3FFFFFF"
+                android:strokeLineCap="round"
+                android:fillColor="#00000000"
+                android:trimPathEnd="0" />
+
+            <!-- Segment 3 -->
+            <path
+                android:name="segment3"
+                android:pathData="M 54, 86 A 32, 32 0 0, 1 23.3, 63"
+                android:strokeWidth="7"
+                android:strokeColor="#66FFFFFF"
+                android:strokeLineCap="round"
+                android:fillColor="#00000000"
+                android:trimPathEnd="0" />
+
+            <group android:name="arrow_group" android:pivotX="54" android:pivotY="54">
+                <!-- Sleek Line Arrow -->
+                <path
+                    android:name="arrow"
+                    android:pathData="M 54, 33 L 54, 73 M 36, 55 L 54, 73 L 72, 55"
+                    android:strokeWidth="7"
+                    android:strokeColor="#FFFFFF"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"
+                    android:fillColor="#00000000" />
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <!-- Animations -->
+    <target android:name="segment1">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="trimPathEnd"
+                android:duration="600"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </aapt:attr>
+    </target>
+    
+    <target android:name="segment2">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="trimPathEnd"
+                android:duration="600"
+                android:startOffset="150"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </aapt:attr>
+    </target>
+    
+    <target android:name="segment3">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="trimPathEnd"
+                android:duration="600"
+                android:startOffset="300"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="arrow_group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:duration="600"
+                    android:startOffset="200"
+                    android:valueFrom="-30"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/overshoot" />
+                <objectAnimator
+                    android:propertyName="alpha"
+                    android:duration="400"
+                    android:startOffset="200"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/linear" />
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

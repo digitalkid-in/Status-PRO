@@ -1,0 +1,56 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Shadow -->
+    <path
+        android:pathData="M 54, 24 A 32, 32 0 1, 1 53.9, 24"
+        android:strokeWidth="7"
+        android:strokeColor="#33000000"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Segment 1 -->
+    <path
+        android:pathData="M 54, 22 A 32, 32 0 0, 1 86, 54 A 32, 32 0 0, 1 63, 84.7"
+        android:strokeWidth="7"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Segment 2 -->
+    <path
+        android:pathData="M 22, 54 A 32, 32 0 0, 1 45, 23.3"
+        android:strokeWidth="7"
+        android:strokeColor="#B3FFFFFF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Segment 3 -->
+    <path
+        android:pathData="M 54, 86 A 32, 32 0 0, 1 23.3, 63"
+        android:strokeWidth="7"
+        android:strokeColor="#66FFFFFF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Sleek Line Arrow (Drop shadow) -->
+    <path
+        android:pathData="M 54, 35 L 54, 75 M 36, 57 L 54, 75 L 72, 57"
+        android:strokeWidth="7"
+        android:strokeColor="#33000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+        
+    <!-- Sleek Line Arrow -->
+    <path
+        android:pathData="M 54, 33 L 54, 73 M 36, 55 L 54, 73 L 72, 55"
+        android:strokeWidth="7"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+</vector>
