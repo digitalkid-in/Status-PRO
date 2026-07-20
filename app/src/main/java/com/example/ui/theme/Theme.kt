@@ -12,36 +12,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = PurplePrimaryLight,
+    primary = BrandAccentDark,
     onPrimary = Color.White,
-    primaryContainer = GlassyPurpleDark,
-    onPrimaryContainer = PurplePrimaryLight,
-    secondary = PurpleSecondaryLight,
+    primaryContainer = DarkPrimaryContainer,
+    onPrimaryContainer = BrandAccentDark,
+    secondary = BrandPrimaryVariant,
     onSecondary = Color.White,
-    tertiary = PurpleTertiaryLight,
+    tertiary = BrandDeep,
     background = DarkBackground,
     surface = DarkSurface,
     onBackground = DarkTextPrimary,
     onSurface = DarkTextPrimary,
     surfaceVariant = DarkSurfaceVariant,
-    onSurfaceVariant = DarkOnSurfaceVariant,
+    onSurfaceVariant = DarkTextSecondary,
+    outline = DarkOutline,
+    error = DangerRed,
     surfaceTint = Color.Transparent
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = PurplePrimaryLight,
+    primary = BrandPrimary,
     onPrimary = Color.White,
-    primaryContainer = GlassyPurpleLight,
-    onPrimaryContainer = PurplePrimaryLight,
-    secondary = PurpleSecondaryLight,
+    primaryContainer = LightPrimaryContainer,
+    onPrimaryContainer = BrandPrimary,
+    secondary = BrandPrimaryVariant,
     onSecondary = Color.White,
-    tertiary = PurpleTertiaryLight,
+    tertiary = BrandDeep,
     background = LightBackground,
     surface = LightSurface,
     onBackground = LightTextPrimary,
     onSurface = LightTextPrimary,
-    surfaceVariant = Color(0xFFF3EAF8),
-    onSurfaceVariant = Color(0xFF7B1FA2),
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightTextSecondary,
+    outline = LightOutline,
+    error = DangerRed,
     surfaceTint = Color.Transparent
 )
 
