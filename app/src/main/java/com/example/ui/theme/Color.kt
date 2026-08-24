@@ -29,4 +29,3 @@ val DarkTextPrimary = Color(0xFFF5F3FB)
 val DarkTextSecondary = Color(0xFFB2ACC6)
 val DarkTextTertiary = Color(0xFF8A84A0)
 val DarkPrimaryContainer = Color(0xFF2E2350)
-val DarkCardBg = DarkSurface
