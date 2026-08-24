@@ -827,7 +827,7 @@ fun StatusGrid(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("CONNECT DIRECTORY", fontWeight = FontWeight.Bold)
+                    Text("allow access", fontWeight = FontWeight.Bold)
                 }
             }
         }
