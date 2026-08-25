@@ -641,11 +641,21 @@ fun MainScreen(
 
                 // Navigation Bar
                 NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 8.dp,
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.55f),
+                    tonalElevation = 0.dp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                        .border(
+                            width = 1.dp,
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.White.copy(alpha = 0.35f),
+                                    Color.White.copy(alpha = 0.05f)
+                                )
+                            ),
+                            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                        )
                 ) {
                     val items = listOf(
                         Triple("IMAGES", Icons.Default.Image, 0),
@@ -827,7 +837,7 @@ fun StatusGrid(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("CONNECT DIRECTORY", fontWeight = FontWeight.Bold)
+                    Text("Allow Access", fontWeight = FontWeight.Bold)
                 }
             }
         }
