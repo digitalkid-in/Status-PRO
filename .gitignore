@@ -16,3 +16,13 @@
 local.properties
 .env
 debug.keystore
+*.jks
+*.jks.*
+my-upload-key.jks
+*.pem
+upload_certificate.pem
+bundletool.jar
+BundleConfig.pb
+base_manifest.pb
+/base/
+play-service-account.json

@@ -1,3 +1,4 @@
+import com.github.triplet.gradle.androidpublisher.ResolutionStrategy
 import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
 
 plugins {
@@ -7,6 +8,7 @@ plugins {
   alias(libs.plugins.roborazzi)
   alias(libs.plugins.secrets)
   alias(libs.plugins.google.services)
+  alias(libs.plugins.triplet.play)
 }
 
 android {
@@ -17,8 +19,8 @@ android {
     applicationId = "in.digitalkid.statuspro"
     minSdk = 24
     targetSdk = 36
-    versionCode = 8
-    versionName = "8.0"
+    versionCode = 10
+    versionName = "9.1"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -45,6 +47,9 @@ android {
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       signingConfig = signingConfigs.getByName("release")
+      ndk {
+        debugSymbolLevel = "FULL"
+      }
     }
     debug {
       signingConfig = signingConfigs.getByName("debugConfig")
@@ -70,6 +75,18 @@ secrets {
 
 googleServices {
   missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN
+}
+
+// Publishing to the Play Console via the Gradle Play Publisher plugin.
+// Requires a service account JSON key with access to this app in Play
+// Console, pointed to by PLAY_SERVICE_ACCOUNT_JSON or the default path below.
+play {
+  serviceAccountCredentials.set(
+    file(System.getenv("PLAY_SERVICE_ACCOUNT_JSON") ?: "${rootDir}/play-service-account.json")
+  )
+  defaultToAppBundles.set(true)
+  track.set(System.getenv("PLAY_TRACK") ?: "internal")
+  resolutionStrategy.set(ResolutionStrategy.AUTO)
 }
 
 
