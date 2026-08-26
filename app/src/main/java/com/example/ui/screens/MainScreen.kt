@@ -84,7 +84,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -738,7 +740,7 @@ fun MainScreen(
                 }
 
                 // Navigation Bar — transparent + blurred (frosted glass) over the content behind it
-                val navBarTintColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+                val navBarTintColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.22f)
                 NavigationBar(
                     containerColor = Color.Transparent,
                     tonalElevation = 0.dp,
@@ -746,7 +748,7 @@ fun MainScreen(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                         .hazeEffect(state = hazeState) {
-                            blurRadius = 20.dp
+                            blurRadius = 12.dp
                             tints = listOf(HazeTint(navBarTintColor))
                             noiseFactor = 0.08f
                         }
@@ -1278,7 +1280,29 @@ fun SettingsTab(
 ) {
     val context = LocalContext.current
     val autoCleanupDays by viewModel.autoCleanupDays.collectAsState()
+    val showFolderTip by viewModel.showSettingsFolderTip.collectAsState()
 
+    if (showFolderTip) {
+        AlertDialog(
+            onDismissRequest = { /* Must tap "Got it" — an accidental outside tap shouldn't silently mark this permanently seen */ },
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
+            title = { Text("Folder Setup Required", fontWeight = FontWeight.Bold) },
+            text = {
+                Text(
+                    "To automatically detect statuses, link your WhatsApp status folder:\n\n" +
+                        "1. Tap \"Link Folder\" on the Personal Directory card below.\n" +
+                        "2. Navigate to: Internal Storage → Android → media → com.whatsapp → WhatsApp → Media → .Statuses\n" +
+                        "3. Tap \"Use this folder\" to grant access.\n\n" +
+                        "For WhatsApp Business, use the Business Directory card and select the com.whatsapp.w4b folder instead."
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.dismissSettingsFolderTip() }) {
+                    Text("Got it")
+                }
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -1616,7 +1640,7 @@ fun SettingsTab(
                 .shadow(2.dp, RoundedCornerShape(16.dp))
                 .clickable {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = android.net.Uri.parse("mailto:support@statuspro.example.com")
+                        data = android.net.Uri.parse("mailto:support@digitalkid.in")
                         putExtra(Intent.EXTRA_SUBJECT, "Feedback for Status Pro App")
                     }
                     try {

@@ -54,6 +54,9 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
     private val _showQuickTutorialBanner = MutableStateFlow(true)
     val showQuickTutorialBanner: StateFlow<Boolean> = _showQuickTutorialBanner.asStateFlow()
 
+    private val _showSettingsFolderTip = MutableStateFlow(true)
+    val showSettingsFolderTip: StateFlow<Boolean> = _showSettingsFolderTip.asStateFlow()
+
     // 3-way Theme Selection: "system", "light", "dark"
     private val _themePreference = MutableStateFlow("system")
     val themePreference: StateFlow<String> = _themePreference.asStateFlow()
@@ -77,6 +80,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         _isBusinessMode.value = prefs.getBoolean("is_business_mode", false)
         _showTutorial.value = prefs.getBoolean("show_tutorial_v2", true)
         _showQuickTutorialBanner.value = prefs.getBoolean("show_quick_tutorial_banner", true)
+        _showSettingsFolderTip.value = prefs.getBoolean("show_settings_folder_tip", true)
         _themePreference.value = prefs.getString("theme_pref", "system") ?: "system"
         _autoCleanupDays.value = prefs.getInt("auto_cleanup_days", 0)
 
@@ -312,6 +316,14 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
     fun dismissQuickTutorialBanner() {
         prefs.edit().putBoolean("show_quick_tutorial_banner", false).apply()
         _showQuickTutorialBanner.value = false
+    }
+
+    /**
+     * Dismisses the first-time Settings folder setup tip permanently.
+     */
+    fun dismissSettingsFolderTip() {
+        prefs.edit().putBoolean("show_settings_folder_tip", false).apply()
+        _showSettingsFolderTip.value = false
     }
 
     /**
