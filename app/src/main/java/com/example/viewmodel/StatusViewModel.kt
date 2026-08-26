@@ -51,6 +51,9 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
     private val _showTutorial = MutableStateFlow(true)
     val showTutorial: StateFlow<Boolean> = _showTutorial.asStateFlow()
 
+    private val _showQuickTutorialBanner = MutableStateFlow(true)
+    val showQuickTutorialBanner: StateFlow<Boolean> = _showQuickTutorialBanner.asStateFlow()
+
     // 3-way Theme Selection: "system", "light", "dark"
     private val _themePreference = MutableStateFlow("system")
     val themePreference: StateFlow<String> = _themePreference.asStateFlow()
@@ -73,6 +76,7 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
         _grantedTreeUriBusiness.value = prefs.getString("granted_tree_uri_business", null)
         _isBusinessMode.value = prefs.getBoolean("is_business_mode", false)
         _showTutorial.value = prefs.getBoolean("show_tutorial_v2", true)
+        _showQuickTutorialBanner.value = prefs.getBoolean("show_quick_tutorial_banner", true)
         _themePreference.value = prefs.getString("theme_pref", "system") ?: "system"
         _autoCleanupDays.value = prefs.getInt("auto_cleanup_days", 0)
 
@@ -300,6 +304,14 @@ class StatusViewModel(application: Application) : AndroidViewModel(application) 
     fun showTutorialAgain() {
         prefs.edit().putBoolean("show_tutorial_v2", true).apply()
         _showTutorial.value = true
+    }
+
+    /**
+     * Dismisses the small "Quick Tutorial" banner permanently.
+     */
+    fun dismissQuickTutorialBanner() {
+        prefs.edit().putBoolean("show_quick_tutorial_banner", false).apply()
+        _showQuickTutorialBanner.value = false
     }
 
     /**

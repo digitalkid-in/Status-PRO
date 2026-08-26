@@ -26,7 +26,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -345,12 +345,12 @@ fun MediaPreviewDialog(
                                 containerColor = MaterialTheme.colorScheme.secondary,
                                 contentColor = Color.White,
                                 shape = CircleShape,
-                                modifier = Modifier.size(52.dp)
+                                modifier = Modifier.size(40.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Share,
                                     contentDescription = "Share Status",
-                                    modifier = Modifier.size(22.dp)
+                                    modifier = Modifier.size(18.dp)
                                 )
                             }
 
@@ -362,12 +362,12 @@ fun MediaPreviewDialog(
                                         containerColor = MaterialTheme.colorScheme.primary,
                                         contentColor = Color.White,
                                         shape = CircleShape,
-                                        modifier = Modifier.size(60.dp) // Larger save button as primary action
+                                        modifier = Modifier.size(44.dp)
                                     ) {
                                         Icon(
-                                            imageVector = Icons.Default.Save,
+                                            imageVector = Icons.Default.Download,
                                             contentDescription = "Save Status to Gallery",
-                                            modifier = Modifier.size(26.dp)
+                                            modifier = Modifier.size(20.dp)
                                         )
                                     }
                                 } else {
@@ -377,12 +377,12 @@ fun MediaPreviewDialog(
                                         containerColor = MaterialTheme.colorScheme.error,
                                         contentColor = Color.White,
                                         shape = CircleShape,
-                                        modifier = Modifier.size(52.dp)
+                                        modifier = Modifier.size(40.dp)
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Delete,
                                             contentDescription = "Delete Saved Status",
-                                            modifier = Modifier.size(22.dp)
+                                            modifier = Modifier.size(18.dp)
                                         )
                                     }
                                 }

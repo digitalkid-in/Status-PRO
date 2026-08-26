@@ -119,6 +119,7 @@ dependencies {
   implementation(libs.androidx.room.runtime)
   implementation(libs.coil.compose)
   implementation(libs.coil.video)
+  implementation(libs.haze)
   implementation(libs.converter.moshi)
   implementation(libs.firebase.ai)
   implementation(libs.firebase.appcheck.recaptcha)
