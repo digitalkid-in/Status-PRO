@@ -22,6 +22,13 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -167,7 +174,25 @@ fun MainScreen(
 
     var activeTab by remember { mutableIntStateOf(0) } // 0: Images, 1: Videos, 2: Saved, 3: Settings/About
     var isLinkingBusiness by remember { mutableStateOf(false) }
+    var isBottomBarVisible by rememberSaveable { mutableStateOf(true) }
     val hazeState = remember { HazeState() }
+
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y < -10f) {
+                    isBottomBarVisible = false
+                } else if (available.y > 10f) {
+                    isBottomBarVisible = true
+                }
+                return Offset.Zero
+            }
+        }
+    }
+
+    LaunchedEffect(activeTab) {
+        isBottomBarVisible = true
+    }
 
     // SAF Document tree selection launcher
     val safLauncher = rememberLauncherForActivityResult(
@@ -498,10 +523,6 @@ fun MainScreen(
                     }
                 }
 
-                // Removed redundant Header Title
-
-                // Removed redundant Segmented Tabs
-
                 // Demo Banner (if active)
                 AnimatedVisibility(
                     visible = isDemoMode,
@@ -575,7 +596,9 @@ fun MainScreen(
         },
     ) { innerPadding ->
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(nestedScrollConnection)
         ) {
             // Main content sits behind the floating nav bar so it can be seen (blurred) through it
             Box(
@@ -603,7 +626,7 @@ fun MainScreen(
                                     context.startActivity(intent)
                                 }
                             },
-                            emptyStateMessage = "No status images seen yet! Watch statuses in your messaging client first.",
+                            emptyStateMessage = "The app will automatically open the correct folder if you click allow access.\n\nSimply tap 'USE THIS FOLDER' at the bottom of the screen and select 'Allow'.",
                             isDemoMode = isDemoMode,
                             onActionClicked = {
                                 isLinkingBusiness = isBusinessMode
@@ -622,7 +645,7 @@ fun MainScreen(
                                     context.startActivity(intent)
                                 }
                             },
-                            emptyStateMessage = "No status videos seen yet! Watch videos in your messaging client first.",
+                            emptyStateMessage = "The app will automatically open the correct folder if you click allow access.\n\nSimply tap 'USE THIS FOLDER' at the bottom of the screen and select 'Allow'.",
                             isDemoMode = isDemoMode,
                             onActionClicked = {
                                 isLinkingBusiness = isBusinessMode
@@ -664,126 +687,159 @@ fun MainScreen(
             }
             }
 
-            // Floating bottom bar overlay: tutorial banner + blurred, transparent nav bar
-            Column(
+            // Floating bottom bar overlay: tutorial banner + frosted nav bar with auto-hide on scroll down
+            AnimatedVisibility(
+                visible = isBottomBarVisible,
+                enter = slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(durationMillis = 280, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(durationMillis = 200)),
+                exit = slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(durationMillis = 280, easing = FastOutSlowInEasing)
+                ) + fadeOut(animationSpec = tween(durationMillis = 200)),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .navigationBarsPadding()
             ) {
-                // Beautiful dismissible Quick Tutorial banner
-                val showBannerTutorial by viewModel.showQuickTutorialBanner.collectAsState()
-                AnimatedVisibility(
-                    visible = showBannerTutorial,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.secondaryContainer,
-                                shape = RoundedCornerShape(24.dp)
-                            )
-                            .padding(16.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                modifier = Modifier.weight(1f),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(44.dp)
-                                        .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(14.dp)),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Save,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Column {
-                                    Text(
-                                        text = "Quick Tutorial",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.ExtraBold,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                    Text(
-                                        text = "Tap any status to preview or share instantly.",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "DISMISS",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                                    .clickable { viewModel.dismissQuickTutorialBanner() }
-                                    .padding(8.dp)
-                            )
-                        }
-                    }
-                }
-
-                // Navigation Bar — transparent + blurred (frosted glass) over the content behind it
-                val navBarTintColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.22f)
-                NavigationBar(
-                    containerColor = Color.Transparent,
-                    tonalElevation = 0.dp,
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                        .hazeEffect(state = hazeState) {
-                            blurRadius = 12.dp
-                            tints = listOf(HazeTint(navBarTintColor))
-                            noiseFactor = 0.08f
-                        }
-                        .border(
-                            width = 1.dp,
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.White.copy(alpha = 0.35f),
-                                    Color.White.copy(alpha = 0.05f)
-                                )
-                            ),
-                            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                        )
+                        .navigationBarsPadding()
                 ) {
-                    val items = listOf(
-                        Triple("IMAGES", Icons.Default.Image, 0),
-                        Triple("VIDEOS", Icons.Default.PlayCircle, 1),
-                        Triple("SAVED", Icons.Default.Folder, 2),
-                        Triple("SETTINGS", Icons.Default.Settings, 3)
-                    )
+                    // Dismissible Quick Tutorial banner
+                    val showBannerTutorial by viewModel.showQuickTutorialBanner.collectAsState()
+                    AnimatedVisibility(
+                        visible = showBannerTutorial,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondaryContainer,
+                                    shape = RoundedCornerShape(24.dp)
+                                )
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(
+                                    modifier = Modifier.weight(1f),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(44.dp)
+                                            .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(14.dp)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Save,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Column {
+                                        Text(
+                                            text = "Quick Tutorial",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
+                                        Text(
+                                            text = "Tap any status to preview or share instantly.",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "DISMISS",
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier
+                                        .clickable { viewModel.dismissQuickTutorialBanner() }
+                                        .padding(8.dp)
+                                )
+                            }
+                        }
+                    }
 
-                    items.forEach { (label, icon, index) ->
-                        NavigationBarItem(
-                            selected = activeTab == index,
-                            onClick = { activeTab = index },
-                            icon = { Icon(imageVector = icon, contentDescription = label) },
-                            label = { Text(text = label, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold) },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                                selectedTextColor = MaterialTheme.colorScheme.primary,
-                                indicatorColor = MaterialTheme.colorScheme.primary,
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    // Navigation Bar — frosted glass with translucent depth and smooth blur
+                    val isDark = isSystemInDarkTheme() || themePreference == "dark"
+                    val navBarTintColor = if (isDark) {
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.68f)
+                    } else {
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.72f)
+                    }
+
+                    NavigationBar(
+                        containerColor = Color.Transparent,
+                        tonalElevation = 0.dp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(12.dp, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                            .hazeEffect(state = hazeState) {
+                                blurRadius = 16.dp
+                                tints = listOf(HazeTint(navBarTintColor))
+                                noiseFactor = 0.03f
+                            }
+                            .border(
+                                width = 1.dp,
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        if (isDark) Color.White.copy(alpha = 0.22f) else Color.White.copy(alpha = 0.55f),
+                                        Color.Transparent
+                                    )
+                                ),
+                                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                             )
+                    ) {
+                        val items = listOf(
+                            Triple("IMAGES", Icons.Default.Image, 0),
+                            Triple("VIDEOS", Icons.Default.PlayCircle, 1),
+                            Triple("SAVED", Icons.Default.Folder, 2),
+                            Triple("SETTINGS", Icons.Default.Settings, 3)
                         )
+
+                        items.forEach { (label, icon, index) ->
+                            NavigationBarItem(
+                                selected = activeTab == index,
+                                onClick = { activeTab = index },
+                                icon = { 
+                                    Icon(
+                                        imageVector = icon, 
+                                        contentDescription = label,
+                                        modifier = Modifier.size(24.dp)
+                                    ) 
+                                },
+                                label = { 
+                                    Text(
+                                        text = label, 
+                                        style = MaterialTheme.typography.labelSmall, 
+                                        fontWeight = if (activeTab == index) FontWeight.ExtraBold else FontWeight.SemiBold
+                                    ) 
+                                },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f),
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+                                    unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -834,7 +890,7 @@ fun StatusGrid(
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = emptyStateMessage,
                 textAlign = TextAlign.Center,
@@ -842,7 +898,7 @@ fun StatusGrid(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(32.dp))
-            if (onActionClicked != {} && emptyStateMessage.contains("messaging client first")) {
+            if (onActionClicked != {}) {
                 Button(
                     onClick = onActionClicked,
                     shape = RoundedCornerShape(14.dp),
